@@ -1,6 +1,5 @@
 /**
  * Javascript Form Creator
- * Example conf;
  * 
  * @param  {Object} conf The config for the form
  * @return {Object}      The form object.
@@ -68,7 +67,7 @@ function jsFC( conf ) {
 			field: '<label for="{{id}}">{{label}}: </label>{{field-input}}',
 
 			// 'input' is for generic input with a specified 'type', so if the type doesn't have it's own template (text,email,password), it will use this and add type attribute
-			input:  '<input class="form-control text-box" type="{{type}}" value="{{value}}" {{checked}}/>',
+			input:  '<input class="form-control text-box" type="{{type}}" {{checked}} />',
 
 			// {{name}} and {{input}} in the option represet the option values, used in the select they'll represet the field name and value
 			select: ['<select class="form-control select-box">','<option {{selected}} value="{{value}}">{{name}}</option>', '</select>'],
