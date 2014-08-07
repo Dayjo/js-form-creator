@@ -87,7 +87,7 @@ function jsFC( conf ) {
 		 * @return {String}  The HTML of the form
 		 */
 		build: function () {
-			var html, form_container, form_tag, form_button, field_html, fieldset, legend, field, field_markup, i, j, k, input, input_type, input_markup, option, type, fld;
+			var html, form_container, form_tag, form_button, field_html, fieldset, legend, field, field_markup, i, j, k, input, input_type, input_markup, option, type, fld, tempoptions;
 
 			// Merge in the
 			this.config = merge_objects( this.config, conf );
@@ -129,8 +129,6 @@ function jsFC( conf ) {
 
 				// Loop through the fieldset's fields and add them to the fieldset
 					for ( j in this.config.fieldsets[i]['fields'] ) {
-						
-
 
 					// Add the input's settings to the default input array
 							input = this.config.fieldsets[i]['fields'][j];
@@ -151,6 +149,16 @@ function jsFC( conf ) {
 							if ( typeof this.markup[input_type] == "object" ) {
 								// <select> (<container>)
 								input['field-input'] = this.parse_template( this.markup[input_type][0], input );
+
+								//  If it's an array i.e. ["option1", "option2"] rather than
+								//  Turn it into an object; {"Option 1": "option1", "Option 2": "option1" }
+								if( input.options instanceof Array ) {
+									tempoptions = {};
+									for( k in input.options ) {
+										tempoptions[input.options[k]] = input.options[k];
+									}
+									input.options = tempoptions;
+								}
 
 								// the <option> tags (<child>)
 								for ( k in input.options ) {
