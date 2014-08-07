@@ -44,6 +44,11 @@ function jsFC( conf ) {
 			return template;
 		},
 
+		/**
+		 * Converts the string markup into a dom element, which we then add the attributes and properties to.
+		 * @param  {string} html The htm markup
+		 * @return {Array}      Array of the html elements converted
+		 */
 		html2dom: function( html ) {
 			var container = document.createElement('div'); // This will get garbage collected
 			container.innerHTML = html;
@@ -52,7 +57,12 @@ function jsFC( conf ) {
 			return container.children;			
 		},
 
-		// Specify the markup / templates
+		/**
+		 * Specify the markup for the different field types, these could be set dynamically too.
+		 * Each type can either be a flat, self closing string i.e. '<input type="text" />'
+		 * or for things like <select> elements, an object/array with a start, child and end tags i.e. ['<select>','<option></option>','</select>'], 
+		 * @type {Object}
+		 */
 		markup:  {
 			form: '<form class="form"></form>',
 
@@ -63,6 +73,7 @@ function jsFC( conf ) {
 
 			// 'input' is for generic input with a specified 'type', so if the type doesn't have it's own template (text,email,password), it will use this and add type attribute
 			input:  '<input class="form-control text-box" type="{{type}}" />',
+
 			// {{name}} and {{input}} in the option represet the option values, used in the select they'll represet the field name and value
 			select: ['<select class="form-control select-box">','<option value="{{value}}">{{name}}</option>', '</select>'],
 		},
@@ -141,24 +152,25 @@ function jsFC( conf ) {
 						
 
 						// Parse the input type's html with the input config to add element properties, classes e.t.c.
-							// The <select> input type
-							if ( input_type == 'select' ) {
-								// <select>
+							// Parse object based markup, i.e. select has a container and children [container_start, child, container_end]
+							if ( typeof this.markup[input_type] == "object" ) {
+								// <select> (<container>)
 								input['field-input'] = this.parse_template( this.markup[input_type][0], input );
 
-								// the <option> tags
+								// the <option> tags (<child>)
 								for ( k in input.options ) {
 									option = { name: k, value: input.options[k] };
 									input['field-input'] += this.parse_template( this.markup[input_type][1], option );
 								}
 
-								// </select>
+								// </select> (</container>)
 								input['field-input'] += this.markup[input_type][2];
 							}
-							// Parse the generic <input> type
-							else {
+							// Parse the self closing single string based <input> type
+							else if ( typeof this.markup[input_type] == "string" ) {
 								input['field-input'] = this.parse_template( this.markup[input_type], input );
 							}
+
 
 						// Build the 'field' row html, this could contain the label and the input
 							field_markup = this.parse_template( this.markup.field, input );
