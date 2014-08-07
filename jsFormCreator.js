@@ -1,4 +1,3 @@
-
 /**
  * Javascript Form Creator
  * Example conf;
@@ -16,10 +15,7 @@ function jsFC( conf ) {
 			type: "text",
 			name: "input",
 			label: "",
-
-			placeholder: "",
 			id: "",
-			required: false
 			// etc
 		},
 
@@ -72,10 +68,10 @@ function jsFC( conf ) {
 			field: '<label for="{{id}}">{{label}}: </label>{{field-input}}',
 
 			// 'input' is for generic input with a specified 'type', so if the type doesn't have it's own template (text,email,password), it will use this and add type attribute
-			input:  '<input class="form-control text-box" type="{{type}}" />',
+			input:  '<input class="form-control text-box" type="{{type}}" value="{{value}}" {{checked}}/>',
 
 			// {{name}} and {{input}} in the option represet the option values, used in the select they'll represet the field name and value
-			select: ['<select class="form-control select-box">','<option value="{{value}}">{{name}}</option>', '</select>'],
+			select: ['<select class="form-control select-box">','<option {{selected}} value="{{value}}">{{name}}</option>', '</select>'],
 		},
 
 		config: {
@@ -92,10 +88,10 @@ function jsFC( conf ) {
 		 * @return {String}  The HTML of the form
 		 */
 		build: function () {
-			var html, form_container, form_tag, form_button, field_html, fieldset, legend, field, field_markup, i, j, k, input, input_type, input_markup, option;
+			var html, form_container, form_tag, form_button, field_html, fieldset, legend, field, field_markup, i, j, k, input, input_type, input_markup, option, type, fld;
 
 			// Merge in the
-			this.config = merge_objects( this.config, conf);
+			this.config = merge_objects( this.config, conf );
 
 			// The container for the form, so we can get the entire form html (this will not be returned)
 				form_container = document.createElement("div");
@@ -132,25 +128,25 @@ function jsFC( conf ) {
 						fieldset.appendChild(legend);
 					}
 
-					// Loop through the fieldset's field and add them to the fieldset
+				// Loop through the fieldset's fields and add them to the fieldset
 					for ( j in this.config.fieldsets[i]['fields'] ) {
 						
-						// Add the input's settings to the default input array
+
+
+					// Add the input's settings to the default input array
 							input = this.config.fieldsets[i]['fields'][j];
 							input = merge_objects( this.default_input, input )
 
-						// Get the actual input type based on the 'stated' type, i.e. text = email = password = input, select = select,
+					// Get the actual input type based on the 'stated' type, i.e. text = email = password = input, select = select,
 						if ( typeof this.markup[input.type] == "undefined" ) {
-							// Use the input markup
+						// Use the input markup
 							input_type = "input";
 						}
 						else {
-							// Use the chosen mark up type (probably select)
+						// Use the chosen mark up type (probably select)
 							input_type = input.type;
 						}
-
 						
-
 						// Parse the input type's html with the input config to add element properties, classes e.t.c.
 							// Parse object based markup, i.e. select has a container and children [container_start, child, container_end]
 							if ( typeof this.markup[input_type] == "object" ) {
@@ -160,6 +156,12 @@ function jsFC( conf ) {
 								// the <option> tags (<child>)
 								for ( k in input.options ) {
 									option = { name: k, value: input.options[k] };
+									if ( typeof input.default != "undefined" && typeof input.value == "undefined" ){ 
+										if ( option.value == input.default ) {
+											option.selected = "selected"; // For selects
+										}
+									}
+
 									input['field-input'] += this.parse_template( this.markup[input_type][1], option );
 								}
 
@@ -168,34 +170,45 @@ function jsFC( conf ) {
 							}
 							// Parse the self closing single string based <input> type
 							else if ( typeof this.markup[input_type] == "string" ) {
+
+								if ( typeof input.default != "undefined" && typeof input.value == "undefined" ){ 
+									input.value = input.default;
+								}
+
 								input['field-input'] = this.parse_template( this.markup[input_type], input );
 							}
 
 
-						// Build the 'field' row html, this could contain the label and the input
+						// Build the 'field' row html, this could contain the label and other values
 							field_markup = this.parse_template( this.markup.field, input );
 
 						// Create the actual field DOM element
 							field = this.html2dom( field_markup );
+						
+						// Loop through each of the elements in the field (label, input etc) and add them to the fieldset element
+							for ( k = 0; k < field.length+k; k++ ) {
 
-						// Add the field elements to the fieldset
-						var type, fld;
-							for ( k in field ) {
-								type = typeof field[0];
-								if ( type == "object" ) {
-									fld = field[0];
+								// field[0] will always be the current item in the array because appendChild removes it
+								if ( typeof field[0] == "object" ) { 
 
-									// If it's the input add all the properties
-									if ( typeof fld.type != 'undefined' && fld.type.replace(/-[a-zA-Z0-9]+/g, "") == input.type ) {
+									// If it's the actual input add all the attributes to it
+									if ( typeof field[0].type != 'undefined' && field[0].type.replace(/-[a-zA-Z0-9]+/g, "") == input.type )  {
+										
+										// Loop through each attribute
 										for ( var x in input ) {
-											fld[x] = input[x];
+
+											// Only add specified attributes, and Don't add some of the formcreator's attributes
+											if ( ['field-input','label', 'default', 'options'].indexOf(x) == -1 ) {
+												field[0].setAttribute(x, input[x]);
+											}
 										}
 									}
 
-									fieldset.appendChild(fld);		
+									// Add the field elements (label, input e.t.c.) to the fieldset
+									fieldset.appendChild(field[0]);
 								}
 							}
-						
+
 					}
 
 					// Add the fieldset element to the form element
@@ -222,10 +235,6 @@ function jsFC( conf ) {
 	};
 
 	form.build();
-
-	if ( typeof conf ) {
-
-	}
 
 	return form;
 }

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>JS Form Creator - Example Form</title>
+		<script src="../jsFormCreator.min.js"></script>
+	</head>
+	<body>
+
+	<div id="form-container"></div>
+
+	<script>
+	// The form config
+	var contact_form = {
+
+		id: 			"my-form",
+		button_text: 	"Post Form",
+		action: "",
+		method: "get",
+		enctype: "application/form",
+
+		target_selector: "#form-container",
+
+		// The onsubmit event for the form, this gets the form data and throws it over to the assets.create function
+		onsubmit: function(e) {
+			console.log('Form Submitted!');
+		}, 
+
+
+		// An array of fieldsets come next!
+		fieldsets: [
+
+			// List of fieldsets
+			{
+				legend: "Example Form",
+
+				// An array of fields
+				fields: [
+
+					// The text input
+					{
+						type: 		"text",
+						name: 		"text-field",
+						label: 		"Text field",
+						placeholder: "Placeholder text...", 
+					},
+
+					// The text input
+					{
+						type: 		"select",
+						name: 		"select-field",
+						label: 		"Select field",
+						placeholder: "Placeholder text...", 
+					},
+
+				],
+			}
+
+		] // End of fieldsets array
+
+	};
+
+	var contact_form = jsFC( contact_form );
+	document.getElementById('form-container').appendChild( contact_form.form_el );
+	</script>
+
+	</body>	
+</html>	

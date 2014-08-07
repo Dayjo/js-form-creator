@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>JS Form Creator - Contact Form</title>
+		<script src="../jsFormCreator.js"></script>
+	</head>
+	<body>
+
+	<div id="form-container"></div>
+
+	<script>
+
+	// The form config
+	var contact_form = {
+
+		id: 			"my-form",
+		button_text: 	"Post Form",
+		action: "",
+		method: "get",
+		enctype: "application/form",
+
+		target_selector: "#form-container",
+
+		// The onsubmit event for the form, this gets the form data 
+		onsubmit: function() {
+			console.log("Submitted")
+		}, 
+
+		// An array of fieldsets come next!
+		fieldsets: [
+
+			// List of fieldsets
+			{
+				legend: "Contact Us",
+
+				// An array of fields
+				fields: [
+
+					// The image url text input
+					{
+						type: 		"text",
+						name: 		"name",
+						id:   		"name",
+						label: 		"Your Name",
+						placeholder: "John Smith"
+					},
+
+					// The image url text input
+					{
+						type: 		"select",
+						name: 		"where-hear",
+						id:   		"where-hear",
+						options: 	{"Internet": "internet", "Magazine": "mag" },
+						default: 	"mag",
+						label: 		"Where did you hear about us?"
+					}
+
+				],
+			}
+
+		] // End of fieldsets array
+	};
+
+
+	var contact_form = jsFC( contact_form );
+	document.getElementById('form-container').appendChild( contact_form.form_el );
+	</script>
+
+	</body>	
+</html>	
