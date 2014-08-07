@@ -43,12 +43,51 @@
 						placeholder: "Placeholder text...", 
 					},
 
-					// The text input
+					// The text input with default value
+					{
+						type: 		"text",
+						name: 		"text-field",
+						label: 		"Text field (with default value)",
+						placeholder: "Placeholder text...",
+						default: 	"Default Value",  
+					},
+
+
+					// The select input
 					{
 						type: 		"select",
 						name: 		"select-field",
-						label: 		"Select field",
-						options: ["Option 1", "Option 2"]
+						label: 		"Select field (with default value)",
+						default: 	"Option2", 
+						options: ["Option1", "Option2", "Option3"]
+					},
+
+					// The text input with default value
+					{
+						type: 		"checkbox",
+						name: 		"checkbox-field[]",
+						label: 		"Checkbox field",
+						placeholder: "Placeholder text...",
+						value: 		"value", 
+					},
+
+					// The text input with default value
+					{
+						type: 		"checkbox",
+						name: 		"checkbox-field[]",
+						label: 		"Checkbox field (checked)",
+						placeholder: "Placeholder text...",
+						checked: 	"checked", // This will be overriden if default is not this one
+						value: 		"value", 
+					},
+
+					// The text input with default value
+					{
+						type: 		"checkbox",
+						name: 		"checkbox-field[]",
+						label: 		"Checkbox field",
+						placeholder: "Placeholder text...",
+						value: 		"value", 
 					},
 
 				],
