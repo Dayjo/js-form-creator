@@ -13,8 +13,6 @@ function jsFC( conf ) {
 		default_input: {
 			type: "text",
 			name: "input",
-			label: "",
-			id: "",
 			// etc
 		},
 
@@ -64,13 +62,16 @@ function jsFC( conf ) {
 			fieldset: '<fieldset></fieldset>',
 			legend: '<legend></legend>',
 
-			field: '<label for="{{id}}">{{label}}: </label>{{field-input}}',
+			field: '<label class="jsfc-{{type}}" for="{{id}}">{{label}}: </label>{{field-input}}',
 
 			// 'input' is for generic input with a specified 'type', so if the type doesn't have it's own template (text,email,password), it will use this and add type attribute
-			input:  '<input class="form-control text-box" type="{{type}}" {{checked}} />',
+			input:  '<input class="jsfc-text-box" type="{{type}}" {{checked}} />',
 
 			// {{name}} and {{input}} in the option represet the option values, used in the select they'll represet the field name and value
-			select: ['<select class="form-control select-box">','<option {{selected}} value="{{value}}">{{name}}</option>', '</select>'],
+			select: ['<select class="jsfc-select-box">','<option {{selected}} value="{{value}}">{{name}}</option>', '</select>'],
+
+			// {{name}} and {{input}} in the option represet the option values, used in the select they'll represet the field name and value
+			radiolist: ['','<label>{{name}}: <input class="jsfc-radio-box"  name="{{field-name}}[]" {{checked}} id="{{value}}" type="radio" value="{{value}}" /></label>', ''],
 		},
 
 		config: {
@@ -87,7 +88,7 @@ function jsFC( conf ) {
 		 * @return {String}  The HTML of the form
 		 */
 		build: function () {
-			var html, form_container, form_tag, form_button, field_html, fieldset, legend, field, field_markup, i, j, k, input, input_type, input_markup, option, type, fld, tempoptions;
+			var html, form_container, form_tag, form_button, field_html, fieldset, legend, field, field_markup, i, j, k, l, input, input_type, input_markup, option, type, fld, tempoptions;
 
 			// Merge in the
 			this.config = merge_objects( this.config, conf );
@@ -132,7 +133,11 @@ function jsFC( conf ) {
 
 					// Add the input's settings to the default input array
 							input = this.config.fieldsets[i]['fields'][j];
-							input = merge_objects( this.default_input, input )
+							input = merge_objects( this.default_input, input );
+
+							if ( typeof input.id == "undefined" ) {
+								input.id = input.name;
+							}
 
 					// Get the actual input type based on the 'stated' type, i.e. text = email = password = input, select = select,
 						if ( typeof this.markup[input.type] == "undefined" ) {
@@ -163,6 +168,11 @@ function jsFC( conf ) {
 								// the <option> tags (<child>)
 								for ( k in input.options ) {
 									option = { name: k, value: input.options[k] };
+
+									for ( l in input ) {
+										option['field-' + l] = input[l];
+									}
+
 									if ( typeof input.default != "undefined" && typeof input.value == "undefined" ){ 
 										if ( option.value == input.default ) {
 											option.selected = "selected"; // For selects

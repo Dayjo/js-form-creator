@@ -3,6 +3,7 @@
 	<head>
 		<title>JS Form Creator - Example Form</title>
 		<script src="../jsFormCreator.js"></script>
+		<link rel="stylesheet" type="text/css" href="forms.css" >
 	</head>
 	<body>
 
@@ -15,7 +16,7 @@
 		id: 			"my-form",
 		button_text: 	"Post Form",
 		action: "",
-		method: "get",
+		method: "post",
 		enctype: "application/form",
 
 		target_selector: "#form-container",
@@ -30,7 +31,7 @@
 
 			// List of fieldsets
 			{
-				legend: "Example Form",
+				legend: "Some fields",
 
 				// An array of fields
 				fields: [
@@ -61,11 +62,26 @@
 						default: 	"Option2", 
 						options: ["Option1", "Option2", "Option3"]
 					},
+				]
+			},
+			{
+
+				legend: "",
+
+				fields: [
+					// The radio list input
+					{
+						type: 		"radiolist",
+						name: 		"radiolist-field",
+						label: 		"Radiolist field (with default value)",
+						default: 	"Option2", 
+						options: ["Option1", "Option2", "Option3"]
+					},
 
 					// The text input with default value
 					{
 						type: 		"checkbox",
-						name: 		"checkbox-field[]",
+						name: 		"checkbox-field1",
 						label: 		"Checkbox field",
 						placeholder: "Placeholder text...",
 						value: 		"value", 
@@ -74,19 +90,10 @@
 					// The text input with default value
 					{
 						type: 		"checkbox",
-						name: 		"checkbox-field[]",
+						name: 		"checkbox-field2",
 						label: 		"Checkbox field (checked)",
 						placeholder: "Placeholder text...",
 						checked: 	"checked", // This will be overriden if default is not this one
-						value: 		"value", 
-					},
-
-					// The text input with default value
-					{
-						type: 		"checkbox",
-						name: 		"checkbox-field[]",
-						label: 		"Checkbox field",
-						placeholder: "Placeholder text...",
 						value: 		"value", 
 					},
 

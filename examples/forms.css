@@ -1,0 +1,12 @@
+input[type=text], select, label {
+	display: block;
+}
+
+label.jsfc-checkbox {
+	display: inline-block;
+}
+
+label.jsfc-checkbox:before {
+	content: "";
+	display: block;
+}
